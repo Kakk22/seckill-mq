@@ -1,7 +1,6 @@
 package com.cyf.msg;
 
 import cn.hutool.core.util.StrUtil;
-import com.cyf.constant.MessageConstant;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +51,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
 
 
     @Override
-    String encode(String msg) {
+    public String encode() {
         //构建头数据
         header = new HashMap<String, String>(2);
         header.put(VERSION, this.getVersion());
@@ -81,7 +80,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
     }
 
     @Override
-    void decode(String msg) {
+    public void decode(String msg) {
 
         if (StrUtil.isBlank(msg)) {
             throw new NullPointerException("orderMsgProtocol is null");

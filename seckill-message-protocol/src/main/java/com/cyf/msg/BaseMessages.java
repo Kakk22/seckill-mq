@@ -26,16 +26,15 @@ public abstract class BaseMessages {
     /**
      * 编码方法 子类实现
      *
-     * @param msg 需编码消息
      * @return 加密后消息
      */
-    abstract String encode(String msg);
+    public abstract String encode();
 
     /**
      * 解码方法 子类实现
      *
      * @param msg 需解码消息
      */
-    abstract void decode(String msg);
+    public abstract void decode(String msg);
 
 }
