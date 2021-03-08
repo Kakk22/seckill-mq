@@ -21,4 +21,3 @@ spring:
 rocketMq:
   nameServer:
     offline: 47.107.53.172:9876
-#    pro: ${rocketmq_nameServer_aliyun}

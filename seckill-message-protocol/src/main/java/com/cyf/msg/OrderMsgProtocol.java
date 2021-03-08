@@ -102,7 +102,6 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
             this.setProductId(body.get(PRODUCT_ID).asText());
             this.setChargeMoney(body.get(CHARGE_MONEY).asText());
 
-
         } catch (JsonProcessingException e) {
             log.error("The orderMsgProtocol decode fail,error:{}", e.getMessage());
         }
