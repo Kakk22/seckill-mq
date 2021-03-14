@@ -13,6 +13,7 @@ public interface ChargeOrderService {
      * 下单接口
      *
      * @param chargeOrderRequest 下单参数
+     * @return 是否下单成功
      */
-    void chargeOrder(ChargeOrderRequest chargeOrderRequest);
+    boolean chargeOrder(ChargeOrderRequest chargeOrderRequest);
 }

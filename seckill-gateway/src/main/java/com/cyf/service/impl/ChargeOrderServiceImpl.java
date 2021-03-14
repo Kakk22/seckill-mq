@@ -2,9 +2,11 @@ package com.cyf.service.impl;
 
 import com.cyf.dto.ChargeOrderRequest;
 import com.cyf.service.ChargeOrderService;
+import com.cyf.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotBlank;
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 
 /**
@@ -12,18 +14,27 @@ import java.math.BigDecimal;
  * @date 2021/3/12 15:30
  **/
 @Service
+@Slf4j
 public class ChargeOrderServiceImpl implements ChargeOrderService {
 
+    @Resource
+    private ProductService productService;
+
     @Override
-    public void chargeOrder(ChargeOrderRequest chargeOrderRequest) {
+    public boolean chargeOrder(ChargeOrderRequest chargeOrderRequest) {
 
         //验证价格
         verifyPrice(chargeOrderRequest.getPrice());
-        //商品校验 是否还有库存
+        //商品校验 预减库存
+        boolean result = productService.decreaseStock(chargeOrderRequest.getProductId());
 
-        //预减库存
+        if (!result) {
+            log.warn("秒杀订单扣减库存失败,请求参数:{}", chargeOrderRequest.toString());
+            return false;
+        }
+        //todo 秒杀订单入队
 
-        //秒杀订单入队
+        return true;
     }
 
     private void verifyPrice(String price) {
