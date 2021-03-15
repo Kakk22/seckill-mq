@@ -16,4 +16,10 @@ public interface ChargeOrderService {
      * @return 是否下单成功
      */
     boolean chargeOrder(ChargeOrderRequest chargeOrderRequest);
+
+    /**
+     * 秒杀订单入队
+     * @param chargeOrderRequest 下单参数
+     */
+    void  seckillOrderEnqueue(ChargeOrderRequest chargeOrderRequest);
 }

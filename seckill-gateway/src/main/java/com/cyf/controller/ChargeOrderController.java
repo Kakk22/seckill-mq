@@ -27,8 +27,7 @@ public class ChargeOrderController {
 
     @PostMapping(value = "/doCharge")
     public Object doCharge(@Validated ChargeOrderRequest chargeOrderRequest) {
-        chargeOrderService.chargeOrder(chargeOrderRequest);
-        return null;
+        return chargeOrderService.chargeOrder(chargeOrderRequest);
     }
 
 }

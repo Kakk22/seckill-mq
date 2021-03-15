@@ -1,6 +1,7 @@
 package com.cyf.msg;
 
 import cn.hutool.core.util.StrUtil;
+import com.cyf.enums.MessagesProtocolEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +56,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
         //构建头数据
         header = new HashMap<String, String>(2);
         header.put(VERSION, this.getVersion());
-        header.put(TOPIC, this.getTopic());
+        header.put(TOPIC, MessagesProtocolEnum.SECKILL_ORDER_TOPIC.getTopic());
 
         //构建body
         body = new HashMap<String, String>(4);
