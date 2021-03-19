@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -20,6 +21,7 @@ import static com.cyf.constant.MessageConstant.*;
  * @author 陈一锋
  * @date 2021/3/7 17:27
  **/
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
