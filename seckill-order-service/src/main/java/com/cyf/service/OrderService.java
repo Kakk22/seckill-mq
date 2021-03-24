@@ -9,5 +9,11 @@ import com.cyf.domain.Order;
  **/
 public interface OrderService extends IService<Order> {
 
-
+    /**
+     * 下单接口
+     *
+     * @param order 订单实体
+     * @return 下单是否成功
+     */
+    boolean createOrder(Order order);
 }

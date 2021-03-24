@@ -13,7 +13,7 @@ public class MessageTest {
 
         BaseMessages orderMsgProtocol = OrderMsgProtocol.builder()
                 .orderSn("2020111")
-                .productId("22")
+                .proId("22")
                 .userPhone("15633332221")
                 .chargeMoney("199")
                 .build();

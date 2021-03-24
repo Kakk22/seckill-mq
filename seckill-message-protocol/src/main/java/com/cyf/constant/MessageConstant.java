@@ -35,7 +35,7 @@ public interface MessageConstant {
     /**
      * 商品id
      */
-    String PRODUCT_ID = "productId";
+    String PRODUCT_ID = "proId";
     /**
      * 订单价格
      */

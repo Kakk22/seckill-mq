@@ -38,7 +38,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
     /**
      * 商品id
      */
-    private String productId;
+    private String proId;
     /**
      * 订单价格
      */
@@ -64,7 +64,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
         body = new HashMap<String, String>(4);
         body.put(ORDER_SN, this.orderSn);
         body.put(USER_PHONE, this.userPhone);
-        body.put(PRODUCT_ID, this.productId);
+        body.put(PRODUCT_ID, this.proId);
         body.put(CHARGE_MONEY, this.chargeMoney);
 
         HashMap<String, Object> data = new HashMap<String, Object>(2);
@@ -102,7 +102,7 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
             JsonNode body = node.get(BODY);
             this.setOrderSn(body.get(ORDER_SN).asText());
             this.setUserPhone(body.get(USER_PHONE).asText());
-            this.setProductId(body.get(PRODUCT_ID).asText());
+            this.setProId(body.get(PRODUCT_ID).asText());
             this.setChargeMoney(body.get(CHARGE_MONEY).asText());
 
         } catch (JsonProcessingException e) {

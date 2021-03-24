@@ -62,7 +62,7 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         OrderMsgProtocol orderMsgProtocol = OrderMsgProtocol.builder()
                 .userPhone(chargeOrderRequest.getPhone())
                 .chargeMoney(chargeOrderRequest.getPrice())
-                .productId(chargeOrderRequest.getProductId())
+                .proId(chargeOrderRequest.getProductId())
                 .orderSn(orderSn)
                 .build();
         String msg = orderMsgProtocol.encode();

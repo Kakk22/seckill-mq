@@ -1,7 +1,7 @@
 package com.cyf.mq.listener;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cyf.domain.Order;
 import com.cyf.msg.OrderMsgProtocol;
@@ -55,7 +55,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
             }
 
             //业务幂等:判断同一个商品id +userPhone只有一个订单
-            String productId = orderMsgProtocol.getProductId();
+            String productId = orderMsgProtocol.getProId();
             String userPhone = orderMsgProtocol.getUserPhone();
             List<Order> businessList = orderService.list(new QueryWrapper<Order>()
                     .lambda()
@@ -65,7 +65,10 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
                 log.warn("秒杀订单监听器:用户编号:{},商品id:{},已经存在,不可重复下单", userPhone, productId);
             }
 
+            Order order = new Order();
+            BeanUtil.copyProperties(orderMsgProtocol, order);
             //todo 执行扣减库存 下单操作
+            orderService.createOrder(order);
         }
         return null;
     }
