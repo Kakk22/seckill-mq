@@ -9,6 +9,7 @@ import com.cyf.mq.SecKillOrderProducer;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
 import com.cyf.service.ProductService;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -59,12 +60,12 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         String orderSn = UUID.randomUUID().toString();
 
         //组装消息
-        OrderMsgProtocol orderMsgProtocol = OrderMsgProtocol.builder()
-                .userPhone(chargeOrderRequest.getPhone())
-                .chargeMoney(chargeOrderRequest.getPrice())
-                .proId(chargeOrderRequest.getProductId())
-                .orderSn(orderSn)
-                .build();
+        OrderMsgProtocol orderMsgProtocol = new OrderMsgProtocol();
+        orderMsgProtocol.setUserPhone(chargeOrderRequest.getPhone());
+        orderMsgProtocol.setChargeMoney(chargeOrderRequest.getPrice());
+        orderMsgProtocol.setProId(chargeOrderRequest.getProductId());
+        orderMsgProtocol.setOrderSn(orderSn);
+
         String msg = orderMsgProtocol.encode();
         log.info("秒杀消息入队,消息协议:{}", msg);
 

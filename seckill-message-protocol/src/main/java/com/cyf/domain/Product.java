@@ -17,5 +17,5 @@ public class Product {
     private Integer status;
     private BigDecimal price;
     private Integer stock;
-    private String version;
+    private Integer version;
 }

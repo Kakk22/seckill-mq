@@ -5,10 +5,7 @@ import com.cyf.enums.MessagesProtocolEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
@@ -25,7 +22,6 @@ import static com.cyf.constant.MessageConstant.*;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
-@Builder
 public class OrderMsgProtocol extends BaseMessages implements Serializable {
     /**
      * 订单编号

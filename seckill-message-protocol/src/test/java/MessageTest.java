@@ -11,16 +11,16 @@ public class MessageTest {
     @Test
     public void t1(){
 
-        BaseMessages orderMsgProtocol = OrderMsgProtocol.builder()
-                .orderSn("2020111")
-                .proId("22")
-                .userPhone("15633332221")
-                .chargeMoney("199")
-                .build();
-
-        orderMsgProtocol.setTopic("order_skill");
-
-        String json = orderMsgProtocol.encode();
-        System.out.println(json);
+//        BaseMessages orderMsgProtocol = OrderMsgProtocol.builder()
+//                .orderSn("2020111")
+//                .proId("22")
+//                .userPhone("15633332221")
+//                .chargeMoney("199")
+//                .build();
+//
+//        orderMsgProtocol.setTopic("order_skill");
+//
+//        String json = orderMsgProtocol.encode();
+//        System.out.println(json);
     }
 }

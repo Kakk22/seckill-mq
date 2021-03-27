@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cyf.domain.Order;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
+import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -29,8 +31,11 @@ import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlySt
 @Slf4j
 public class SeckillOrderLister implements MessageListenerConcurrently {
 
-    @Resource
+    @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private ProductService productService;
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
@@ -67,8 +72,14 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
 
             Order order = new Order();
             BeanUtil.copyProperties(orderMsgProtocol, order);
-            //todo 执行扣减库存 下单操作
+
+
+            log.info("用户:{},扣减商品id:{} 库存成功,进行下单操作", userPhone, productId);
             orderService.createOrder(order);
+
+
+            //扣减失败
+            return RECONSUME_LATER;
         }
         return null;
     }
