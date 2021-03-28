@@ -17,5 +17,5 @@ public interface ProductService extends IService<Product> {
      * @param productId 商品id
      * @return 是否成功
      */
-    boolean decreaseStock(String productId);
+    boolean decreaseStock(String productId,String phone);
 }

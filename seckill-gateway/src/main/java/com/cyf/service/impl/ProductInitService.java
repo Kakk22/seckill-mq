@@ -1,6 +1,7 @@
 package com.cyf.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.cyf.constant.RedisKeyConstant;
 import com.cyf.domain.Product;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +30,10 @@ public class ProductInitService implements InitializingBean {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
+    private static final String PRODUCT_KEY = "pinfo:pid:";
+
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         List<Product> products = productService.list();
 
         if (CollectionUtils.isEmpty(products)) {
@@ -40,7 +43,7 @@ public class ProductInitService implements InitializingBean {
 
         products.forEach(product -> {
                     String key = String.valueOf(product.getId());
-                    redisTemplate.opsForValue().set(key, product, 84600, TimeUnit.SECONDS);
+                    redisTemplate.opsForValue().set(RedisKeyConstant.PRODUCT_STOCK + key, product.getStock(), 84600, TimeUnit.SECONDS);
                 }
         );
         log.info("初始化订单成功,商品信息:{}", JSON.toJSONString(products));

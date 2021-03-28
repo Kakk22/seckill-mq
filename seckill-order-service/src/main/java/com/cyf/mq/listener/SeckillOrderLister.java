@@ -3,7 +3,6 @@ package com.cyf.mq.listener;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cyf.domain.Order;
 import com.cyf.enums.OrderEnum;
 import com.cyf.msg.OrderMsgProtocol;
@@ -55,7 +54,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
 
             //消息幂等:判断是否消费过
             String orderSn = orderMsgProtocol.getOrderSn();
-            List<Order> list = orderService.list(new QueryWrapper<Order>().eq("order_sn", orderSn));
+            List<Order> list = orderService.list(new QueryWrapper<Order>().lambda().eq(Order::getOrderSn, orderSn));
             if (CollectionUtil.isNotEmpty(list)) {
                 log.warn("秒杀订单监听器:订单编号:{} 该订单已经消费过");
                 return CONSUME_SUCCESS;
@@ -70,6 +69,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
                     .eq(Order::getUserPhone, userPhone));
             if (CollectionUtil.isNotEmpty(businessList)) {
                 log.warn("秒杀订单监听器:用户编号:{},商品id:{},已经存在,不可重复下单", userPhone, productId);
+                return CONSUME_SUCCESS;
             }
 
             Order order = new Order();
@@ -89,7 +89,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
                 log.info("用户:{},扣减商品id:{},下单成功!!!", userPhone, productId);
                 // 模拟订单处理，直接修改订单状态为处理中
                 Order updateOrder = new Order();
-                updateOrder.setState(OrderEnum.DOING.getState());
+                updateOrder.setStatus(OrderEnum.DOING.getStatus());
                 updateOrder.setId(orderResult.getId());
                 orderService.updateById(updateOrder);
 

@@ -26,9 +26,9 @@ public enum OrderEnum {
      */
     FAIL(3);
 
-    private final int state;
+    private final int status;
 
-    OrderEnum(int state) {
-        this.state = state;
+    OrderEnum(int status) {
+        this.status = status;
     }
 }
