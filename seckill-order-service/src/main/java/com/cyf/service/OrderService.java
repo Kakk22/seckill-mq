@@ -15,5 +15,5 @@ public interface OrderService extends IService<Order> {
      * @param order 订单实体
      * @return 下单是否成功
      */
-    boolean createOrder(Order order);
+    Order createOrder(Order order);
 }

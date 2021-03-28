@@ -1,5 +1,7 @@
 package com.cyf.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,6 +15,7 @@ import java.util.Date;
 @Data
 public class Order {
 
+    @TableId(value = "id", type = IdType.AUTO)
     private int id;
     private int proId;
     private String proName;

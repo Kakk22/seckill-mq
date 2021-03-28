@@ -1,11 +1,14 @@
 package com.cyf.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.cyf.mapper.ProductMapper;
+import com.cyf.constant.RedisKeyConstant;
 import com.cyf.domain.Product;
+import com.cyf.mapper.ProductMapper;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +24,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     @Override
     public boolean deStock(Long proId) {
         //乐观锁扣减库存
@@ -29,6 +35,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
         //判断库存是否充足
         if (product.getStock() == 0) {
+            redisTemplate.opsForValue().set(RedisKeyConstant.STOCK_ZERO + proId, 0);
             return false;
         }
 
@@ -42,5 +49,34 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
         }
         return b;
+    }
+
+
+    @Override
+    public boolean hasStock(String pid) {
+
+        if (StrUtil.isBlank(pid)) {
+            log.error("查询库存参数错误,pid:{}", pid);
+            return false;
+        }
+
+        //查询是否有该商品标记库存信息为0
+        Object o = redisTemplate.opsForValue().get(RedisKeyConstant.STOCK_ZERO + pid);
+
+        if (o != null) {
+            log.info("商品pid:{},库存为0", pid);
+            return false;
+        }
+
+        Product product = getById(Long.parseLong(pid));
+
+        if (product == null || product.getStock() <= 0) {
+            redisTemplate.opsForValue().set(RedisKeyConstant.STOCK_ZERO + pid, 0);
+            log.info("商品pid:{}库存为0,信息存入redis", pid);
+            return false;
+        }
+
+        log.info("商品pid:{},库存为{}", pid, product.getStock());
+        return true;
     }
 }

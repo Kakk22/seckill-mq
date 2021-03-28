@@ -3,7 +3,9 @@ package com.cyf.mq.listener;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cyf.domain.Order;
+import com.cyf.enums.OrderEnum;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
@@ -15,10 +17,10 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
-import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.*;
+import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.RECONSUME_LATER;
 
 /**
  * 秒杀订单监听器
@@ -73,14 +75,29 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
             Order order = new Order();
             BeanUtil.copyProperties(orderMsgProtocol, order);
 
+            //先作库存校验 看看还有没有 如果还有则执行下一步 没有则消费成功 返回给用户信息
+            boolean b = productService.hasStock(productId);
+            if (!b) {
+                log.info("秒杀订单监听器:消息消费成功,商品id:{},库存已卖完!!");
+                return CONSUME_SUCCESS;
+            }
 
-            log.info("用户:{},扣减商品id:{} 库存成功,进行下单操作", userPhone, productId);
-            orderService.createOrder(order);
+            log.info("用户:{},扣减商品id:{},存在库存,进行下单操作", userPhone, productId);
+            Order orderResult = orderService.createOrder(order);
 
+            if (orderResult != null) {
+                log.info("用户:{},扣减商品id:{},下单成功!!!", userPhone, productId);
+                // 模拟订单处理，直接修改订单状态为处理中
+                Order updateOrder = new Order();
+                updateOrder.setState(OrderEnum.DOING.getState());
+                updateOrder.setId(orderResult.getId());
+                orderService.updateById(updateOrder);
 
+                return CONSUME_SUCCESS;
+            }
             //扣减失败
             return RECONSUME_LATER;
         }
-        return null;
+        return CONSUME_SUCCESS;
     }
 }
