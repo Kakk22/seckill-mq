@@ -46,4 +46,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return null;
         }
     }
+
+    @Override
+    public void updateStatus(Integer status,Integer id) {
+        orderMapper.updateStatus(status,id);
+    }
 }

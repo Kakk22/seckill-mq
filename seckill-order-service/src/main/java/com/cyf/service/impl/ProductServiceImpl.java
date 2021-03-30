@@ -1,5 +1,6 @@
 package com.cyf.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cyf.constant.RedisKeyConstant;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 陈一锋
@@ -39,16 +42,38 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return false;
         }
 
-        Integer version = product.getVersion();
-        boolean b = productMapper.deStock(id, version);
+//        Integer version = product.getVersion();
+//        boolean b = productMapper.deStock(id, version);
+        int i = 0;
+        boolean result = false;
+        String lock = "product:lock:pid:" + proId;
+        String uuid = UUID.randomUUID().toString();
+        try {
+            do {
+                i++;
+                boolean a = redisTemplate.opsForValue().setIfAbsent(lock, uuid, 30, TimeUnit.SECONDS);
+                if (a) {
+                    log.info("获取分布式锁,扣减库存");
+                    productMapper.deStockByLock(id);
+                    result = true;
+                    break;
+                }
 
-        if (!b) {
-            log.info("扣减库存失败,商品id:{}", id);
-        } else {
-            log.info("扣减库存成功,商品id:{},当前库存:{},版本号:{}", id, product.getStock() - 1, product.getVersion() + 1);
-
+            } while (i <= 10);
+        } finally {
+            String v = (String) redisTemplate.opsForValue().get(lock);
+            if (Objects.equals(v, uuid)) {
+                redisTemplate.delete(lock);
+            }
         }
-        return b;
+
+//        if (!result) {
+//            log.info("扣减库存失败,商品id:{}", id);
+//        } else {
+//            log.info("扣减库存成功,商品id:{},当前库存:{},版本号:{}", id, product.getStock() - 1, product.getVersion() + 1);
+//
+//        }
+        return result;
     }
 
 

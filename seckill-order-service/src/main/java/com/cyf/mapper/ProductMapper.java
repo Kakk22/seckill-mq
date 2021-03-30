@@ -21,4 +21,11 @@ public interface ProductMapper extends BaseMapper<Product> {
      * @return 成功失败
      */
     boolean deStock(@Param("pid") Long pid, @Param("version") Integer version);
+
+    /**
+     * 正常扣减库存
+     * @param id /
+     * @return /
+     */
+    boolean deStockByLock(@Param("pid") Long id);
 }

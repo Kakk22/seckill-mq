@@ -11,4 +11,11 @@
       and p.id = #{pid};
     </update>
 
+    <update id="deStockByLock">
+      update product p
+      set p.stock = p.stock - 1,
+      where p.stock >= 1
+      and p.id = #{pid};
+    </update>
+
 </mapper>

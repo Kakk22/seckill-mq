@@ -88,11 +88,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
             if (orderResult != null) {
                 log.info("用户:{},扣减商品id:{},下单成功!!!", userPhone, productId);
                 // 模拟订单处理，直接修改订单状态为处理中
-//                Order updateOrder = new Order();
-////                updateOrder.setStatus(OrderEnum.DOING.getStatus());
-////                updateOrder.setId(orderResult.getId());
-////                orderService.updateById(updateOrder);
-
+                orderService.updateStatus(OrderEnum.DOING.getStatus(), orderResult.getId());
                 return CONSUME_SUCCESS;
             }
             //扣减失败

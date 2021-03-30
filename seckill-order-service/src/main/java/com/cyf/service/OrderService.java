@@ -16,4 +16,12 @@ public interface OrderService extends IService<Order> {
      * @return 下单是否成功
      */
     Order createOrder(Order order);
+
+    /**
+     * 更新订单状态
+     *
+     * @param status 状态值
+     * @param id  id
+     */
+    void updateStatus(Integer status,Integer id);
 }
