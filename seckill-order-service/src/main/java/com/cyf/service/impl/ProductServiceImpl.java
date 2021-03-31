@@ -50,6 +50,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         String uuid = UUID.randomUUID().toString();
         try {
             do {
+                Thread.sleep(100);
                 i++;
                 boolean a = redisTemplate.opsForValue().setIfAbsent(lock, uuid, 30, TimeUnit.SECONDS);
                 if (a) {
@@ -59,10 +60,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                     break;
                 }
 
-            } while (i <= 10);
+            } while (i <= 20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             String v = (String) redisTemplate.opsForValue().get(lock);
-            if (Objects.equals(v, uuid)) {
+             if (Objects.equals(v, uuid)) {
                 redisTemplate.delete(lock);
             }
         }

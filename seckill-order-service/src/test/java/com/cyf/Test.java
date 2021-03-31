@@ -1,5 +1,6 @@
 package com.cyf;
 
+import com.cyf.mapper.ProductMapper;
 import com.cyf.service.ProductService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,16 @@ public class Test {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     @org.junit.Test
     public void test1() {
         productService.deStock(1L);
+    }
+
+    @org.junit.Test
+    public void test2(){
+        productMapper.deStockByLock(1L);
     }
 }
