@@ -7,14 +7,13 @@ import com.cyf.constant.RedisKeyConstant;
 import com.cyf.domain.Product;
 import com.cyf.mapper.ProductMapper;
 import com.cyf.service.ProductService;
+import com.cyf.service.RedisLockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author 陈一锋
@@ -30,6 +29,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private RedisLockService redisLockService;
+
     @Override
     public boolean deStock(Long proId) {
         //乐观锁扣减库存
@@ -42,41 +44,28 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return false;
         }
 
-//        Integer version = product.getVersion();
-//        boolean b = productMapper.deStock(id, version);
-        int i = 0;
-        boolean result = false;
-        String lock = "product:lock:pid:" + proId;
+        String key = "product:lock:pid:" + proId;
         String uuid = UUID.randomUUID().toString();
+        boolean lock = false;
         try {
-            do {
-                Thread.sleep(100);
-                i++;
-                boolean a = redisTemplate.opsForValue().setIfAbsent(lock, uuid, 30, TimeUnit.SECONDS);
-                if (a) {
-                    log.info("获取分布式锁,扣减库存");
-                    productMapper.deStockByLock(id);
-                    result = true;
-                    break;
-                }
 
-            } while (i <= 20);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            //获取分布式锁
+            lock = redisLockService.lock(key, uuid, 20);
+
+            if (lock) {
+                log.info("获取分布式锁开始扣减库存,当前线程:{}", Thread.currentThread().getName());
+                productMapper.deStockByLock(id);
+                return true;
+            }
+
+            return false;
+
         } finally {
-            String v = (String) redisTemplate.opsForValue().get(lock);
-             if (Objects.equals(v, uuid)) {
-                redisTemplate.delete(lock);
+            //解锁
+            if (lock) {
+                redisLockService.unLock(key, uuid);
             }
         }
-
-//        if (!result) {
-//            log.info("扣减库存失败,商品id:{}", id);
-//        } else {
-//            log.info("扣减库存成功,商品id:{},当前库存:{},版本号:{}", id, product.getStock() - 1, product.getVersion() + 1);
-//
-//        }
-        return result;
     }
 
 

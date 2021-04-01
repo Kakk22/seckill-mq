@@ -8,6 +8,7 @@ import com.cyf.enums.OrderEnum;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
+import com.cyf.service.RedisLockService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -37,6 +38,8 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
 
     @Autowired
     private ProductService productService;
+
+
 
     @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
