@@ -52,7 +52,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         //扣减库存
         Long afterStock = redisTemplate.opsForValue().decrement(RedisKeyConstant.PRODUCT_STOCK + productId);
 
-        if (afterStock == null || afterStock <= 0) {
+        if (afterStock == null || afterStock < 0) {
             log.warn("商品库存为0,商品id:{}", productId);
             return false;
         }
