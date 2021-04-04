@@ -1,5 +1,7 @@
 package com.cyf.model;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 /**
@@ -8,6 +10,7 @@ import java.math.BigDecimal;
  * @author 陈一锋
  * @date 2021/4/4 10:13
  **/
+@Data
 public class Product {
     private Integer id;
     private String name;
@@ -15,4 +18,6 @@ public class Product {
     private BigDecimal price;
     private Integer stock;
     private Integer version;
+
+
 }

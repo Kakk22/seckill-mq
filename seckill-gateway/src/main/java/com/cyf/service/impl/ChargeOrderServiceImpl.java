@@ -9,7 +9,7 @@ import com.cyf.enums.MessagesProtocolEnum;
 import com.cyf.mq.SecKillOrderProducer;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
-import com.cyf.service.ProductService;
+import com.cyf.service.ProductSericeS;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -34,8 +34,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ChargeOrderServiceImpl implements ChargeOrderService {
 
-    @Resource
-    private ProductService productService;
+//    @Resource
+//    private ProductSericeS productSericeS;
 
     @Resource
     private SecKillOrderProducer secKillOrderProducer;
@@ -49,17 +49,17 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         //验证价格
         verifyPrice(chargeOrderRequest.getPrice());
         //商品校验 预减库存
-        boolean result = productService.decreaseStock(chargeOrderRequest.getProductId(),chargeOrderRequest.getPhone());
-
-        if (!result) {
-            log.warn("秒杀订单扣减库存失败,请求参数:{}", chargeOrderRequest.toString());
-            return false;
-        }
+//        boolean result = productSericeS.decreaseStock(chargeOrderRequest.getProductId(),chargeOrderRequest.getPhone());
+//
+//        if (!result) {
+//            log.warn("秒杀订单扣减库存失败,请求参数:{}", chargeOrderRequest.toString());
+//            return false;
+//        }
         try {
             seckillOrderEnqueue(chargeOrderRequest);
         } catch (Exception e) {
             log.error("订单投递失败,回退库存,异常信息:{}", e.getMessage());
-            redisTemplate.opsForValue().increment(RedisKeyConstant.PRODUCT_STOCK + chargeOrderRequest.getProductId());
+//            redisTemplate.opsForValue().increment(RedisKeyConstant.PRODUCT_STOCK + chargeOrderRequest.getProductId());
             return false;
         }
 

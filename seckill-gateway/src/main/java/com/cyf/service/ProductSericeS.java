@@ -9,7 +9,7 @@ import com.cyf.domain.Product;
  * @author 陈一锋
  * @date 2021/3/12 16:45
  **/
-public interface ProductService extends IService<Product> {
+public interface ProductSericeS extends IService<Product> {
 
     /**
      * 扣减库存

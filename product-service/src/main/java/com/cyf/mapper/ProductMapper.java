@@ -1,7 +1,7 @@
 package com.cyf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cyf.domain.Product;
+import com.cyf.model.Product;
 
 /**
  * @author 陈一锋

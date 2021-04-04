@@ -14,7 +14,10 @@ spring:
    port: 6379
    database: 0
    timeout: 2000
-
+  dubbo:
+    application:
+      name: dubbo-gateway
+      registry: zookeeper://47.107.53.172:2181
 
 #rocketMQ 配置
 rocketMq:

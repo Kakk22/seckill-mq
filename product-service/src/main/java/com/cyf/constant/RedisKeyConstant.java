@@ -7,9 +7,9 @@ package com.cyf.constant;
 public interface RedisKeyConstant {
 
 
-
     /**
-     * set集合 key商品id value 用户集合
+     * 商品库存key
      */
-    String ORDER_RECORD_UID = "order:record:pid:";
+    String PRODUCT_STOCK = "product:stock:pid:";
+
 }

@@ -1,8 +1,7 @@
 package com.cyf.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cyf.model.Product;
-
-import java.util.List;
 
 /**
  * 商品服务接口
@@ -25,6 +24,6 @@ public interface ProductService {
      * @param pageNum  当前页
      * @return 商品列表
      */
-    List<Product> list(Integer pageSize, Integer pageNum);
+    IPage<Product> list(Integer pageSize, Integer pageNum);
 
 }
