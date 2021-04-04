@@ -26,4 +26,28 @@ public interface ProductService {
      */
     IPage<Product> list(Integer pageSize, Integer pageNum);
 
+    /**
+     * 扣减redis库存
+     *
+     * @param productId 商品id
+     * @return 是否成功
+     */
+    boolean decreaseStock(String productId, String phone);
+
+    /**
+     * 扣减真实库存
+     *
+     * @param id 商品id
+     * @return /
+     */
+    boolean deStockByLock(Long id);
+
+    /**
+     * 指定key是否还有库存
+     *
+     * @param pid 商品id
+     * @return /
+     */
+    boolean hasStock(String pid);
+
 }

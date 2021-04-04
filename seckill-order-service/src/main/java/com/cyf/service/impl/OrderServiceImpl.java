@@ -1,5 +1,6 @@
 package com.cyf.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cyf.domain.Order;
 import com.cyf.mapper.OrderMapper;
@@ -18,9 +19,8 @@ import org.springframework.stereotype.Service;
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
 
 
-    @Autowired
+    @Reference(version = "1.0.0")
     private ProductService productService;
-
     @Autowired
     private OrderMapper orderMapper;
 
@@ -28,7 +28,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public Order createOrder(Order order) {
         int proId = order.getProId();
         //扣减库存
-        boolean result = productService.deStock((long) proId);
+        boolean result = productService.deStockByLock((long) proId);
 
         if (!result) {
             //失败可通知用户扣减失败
@@ -48,7 +48,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void updateStatus(Integer status,Integer id) {
-        orderMapper.updateStatus(status,id);
+    public void updateStatus(Integer status, Integer id) {
+        orderMapper.updateStatus(status, id);
     }
 }

@@ -2,6 +2,7 @@ package com.cyf.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.cyf.constant.RedisKeyConstant;
 import com.cyf.dto.ChargeOrderRequest;
 import com.cyf.dto.ChargeOrderResponse;
@@ -9,7 +10,7 @@ import com.cyf.enums.MessagesProtocolEnum;
 import com.cyf.mq.SecKillOrderProducer;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
-import com.cyf.service.ProductSericeS;
+import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -34,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ChargeOrderServiceImpl implements ChargeOrderService {
 
-//    @Resource
-//    private ProductSericeS productSericeS;
+    @Reference(version = "1.0.0")
+    private ProductService productService;
 
     @Resource
     private SecKillOrderProducer secKillOrderProducer;
@@ -49,24 +50,24 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         //验证价格
         verifyPrice(chargeOrderRequest.getPrice());
         //商品校验 预减库存
-//        boolean result = productSericeS.decreaseStock(chargeOrderRequest.getProductId(),chargeOrderRequest.getPhone());
-//
-//        if (!result) {
-//            log.warn("秒杀订单扣减库存失败,请求参数:{}", chargeOrderRequest.toString());
-//            return false;
-//        }
+        boolean result = productService.decreaseStock(chargeOrderRequest.getProductId(), chargeOrderRequest.getPhone());
+
+        if (!result) {
+            log.warn("秒杀订单扣减库存失败,请求参数:{}", chargeOrderRequest.toString());
+            return false;
+        }
         try {
             seckillOrderEnqueue(chargeOrderRequest);
         } catch (Exception e) {
             log.error("订单投递失败,回退库存,异常信息:{}", e.getMessage());
-//            redisTemplate.opsForValue().increment(RedisKeyConstant.PRODUCT_STOCK + chargeOrderRequest.getProductId());
+            redisTemplate.opsForValue().increment(RedisKeyConstant.PRODUCT_STOCK + chargeOrderRequest.getProductId());
             return false;
         }
 
         //消息投递成功后,记录该下单消息,该用户不能再扣减该库存
         String key = RedisKeyConstant.ORDER_RECORD_UID + chargeOrderRequest.getProductId();
         redisTemplate.opsForSet().add(key, chargeOrderRequest.getPhone());
-        redisTemplate.expire(key,86400,TimeUnit.SECONDS);
+        redisTemplate.expire(key, 86400, TimeUnit.SECONDS);
         return true;
     }
 
