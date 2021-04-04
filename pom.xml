@@ -12,6 +12,8 @@
         <module>seckill-gateway</module>
         <module>seckill-message-protocol</module>
         <module>seckill-order-service</module>
+        <module>product-service</module>
+        <module>product-service-api</module>
     </modules>
 
 

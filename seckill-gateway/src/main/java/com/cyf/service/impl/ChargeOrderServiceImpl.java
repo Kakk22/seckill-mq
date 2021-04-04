@@ -23,7 +23,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
@@ -75,7 +74,6 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
     public void seckillOrderEnqueue(ChargeOrderRequest chargeOrderRequest) throws Exception {
         //生成订单编号
         String orderSn = UUID.randomUUID().toString();
-
         //组装消息
         OrderMsgProtocol orderMsgProtocol = new OrderMsgProtocol();
         orderMsgProtocol.setUserPhone(chargeOrderRequest.getPhone());
