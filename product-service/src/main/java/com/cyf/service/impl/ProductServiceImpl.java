@@ -146,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         //查询是否有该商品标记库存信息为0
-        Object o = redisTemplate.opsForValue().get(RedisKeyConstant.PRODUCT_STOCK + pid);
+        Object o = redisTemplate.opsForValue().get(RedisKeyConstant.STOCK_ZERO + pid);
 
         if (o != null) {
             log.info("商品pid:{},库存为0", pid);
@@ -156,7 +156,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.selectById(Long.parseLong(pid));
 
         if (product == null || product.getStock() <= 0) {
-            redisTemplate.opsForValue().set(RedisKeyConstant.PRODUCT_STOCK + pid, 0);
+            redisTemplate.opsForValue().set(RedisKeyConstant.STOCK_ZERO  + pid, 0);
             log.info("商品pid:{}库存为0,信息存入redis", pid);
             return false;
         }
