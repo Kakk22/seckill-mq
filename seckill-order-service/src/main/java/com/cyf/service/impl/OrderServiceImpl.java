@@ -21,6 +21,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Reference(version = "1.0.0")
     private ProductService productService;
+
     @Autowired
     private OrderMapper orderMapper;
 

@@ -2,6 +2,7 @@ package com.cyf.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
  * @date 2021/4/4 10:13
  **/
 @Data
-public class Product {
+public class Product implements Serializable {
     private Integer id;
     private String name;
     private Integer status;

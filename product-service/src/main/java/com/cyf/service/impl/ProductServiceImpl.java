@@ -60,6 +60,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public IPage<Product> list(Integer pageSize, Integer pageNum) {
+        pageSize = Optional.ofNullable(pageSize).orElse(10);
+        pageNum = Optional.ofNullable(pageNum).orElse(1);
         IPage<Product> iPage = new Page<>(pageNum, pageSize);
         return productMapper.selectPage(iPage, new QueryWrapper<>());
     }
@@ -156,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productMapper.selectById(Long.parseLong(pid));
 
         if (product == null || product.getStock() <= 0) {
-            redisTemplate.opsForValue().set(RedisKeyConstant.STOCK_ZERO  + pid, 0);
+            redisTemplate.opsForValue().set(RedisKeyConstant.STOCK_ZERO + pid, 0);
             log.info("商品pid:{}库存为0,信息存入redis", pid);
             return false;
         }
