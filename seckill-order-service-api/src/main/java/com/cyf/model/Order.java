@@ -1,10 +1,11 @@
-package com.cyf.domain;
+package com.cyf.model;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
  **/
 @TableName(value = "t_order")
 @Data
-public class Order {
+public class Order implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private int id;
@@ -28,4 +29,5 @@ public class Order {
     private BigDecimal money;
     private Date chargeTime;
     private Date finishTime;
+    private int orderType;
 }

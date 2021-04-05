@@ -31,6 +31,13 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--引入订单api-->
+        <dependency>
+            <groupId>com.cyf</groupId>
+            <artifactId>seckill-order-service-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>com.cyf</groupId>
             <artifactId>product-service-api</artifactId>

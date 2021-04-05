@@ -3,13 +3,18 @@ package com.cyf.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cyf.constant.RedisKeyConstant;
 import com.cyf.dto.ChargeOrderRequest;
 import com.cyf.dto.ChargeOrderResponse;
 import com.cyf.enums.MessagesProtocolEnum;
+import com.cyf.model.Order;
 import com.cyf.mq.SecKillOrderProducer;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
+import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.exception.MQBrokerException;
@@ -37,6 +42,9 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
 
     @Reference(version = "1.0.0")
     private ProductService productService;
+
+    @Reference(version = "1.0.0")
+    private OrderService orderService;
 
     @Resource
     private SecKillOrderProducer secKillOrderProducer;
@@ -115,6 +123,7 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
             throw new RuntimeException("订单价格不能小于0");
         }
     }
+
 }
 
 

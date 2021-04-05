@@ -12,20 +12,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class Test {
-
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @org.junit.Test
-    public void test1() {
-        productService.deStock(1L);
-    }
-
-    @org.junit.Test
-    public void test2(){
-        productMapper.deStockByLock(1L);
-    }
+//
+//    @Autowired
+//    private ProductService productService;
+//
+//    @Autowired
+//    private ProductMapper productMapper;
+//
+//    @org.junit.Test
+//    public void test1() {
+//        productService.deStock(1L);
+//    }
+//
+//    @org.junit.Test
+//    public void test2(){
+//        productMapper.deStockByLock(1L);
+//    }
 }

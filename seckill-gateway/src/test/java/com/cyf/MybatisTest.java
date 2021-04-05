@@ -1,12 +1,8 @@
 package com.cyf;
 
-import com.cyf.domain.Product;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.annotation.Resource;
 
 /**
  * @author 陈一锋

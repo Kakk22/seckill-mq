@@ -22,6 +22,7 @@
             <version>2.0.0</version>
         </dependency>
 
+
         <!--引入zookeeper-->
         <dependency>
             <groupId>com.101tec</groupId>
@@ -43,6 +44,14 @@
         <dependency>
             <groupId>com.cyf</groupId>
             <artifactId>product-service-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--订单api-->
+
+        <dependency>
+            <groupId>com.cyf</groupId>
+            <artifactId>seckill-order-service-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

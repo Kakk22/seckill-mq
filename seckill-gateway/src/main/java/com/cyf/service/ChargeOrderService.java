@@ -1,6 +1,8 @@
 package com.cyf.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cyf.dto.ChargeOrderRequest;
+import com.cyf.model.Order;
 import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.remoting.exception.RemotingException;
@@ -22,7 +24,10 @@ public interface ChargeOrderService {
 
     /**
      * 秒杀订单入队
+     *
      * @param chargeOrderRequest 下单参数
      */
-    void  seckillOrderEnqueue(ChargeOrderRequest chargeOrderRequest) throws Exception;
+    void seckillOrderEnqueue(ChargeOrderRequest chargeOrderRequest) throws Exception;
+
+
 }

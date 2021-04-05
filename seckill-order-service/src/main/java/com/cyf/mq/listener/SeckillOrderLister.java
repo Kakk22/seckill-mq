@@ -2,11 +2,14 @@ package com.cyf.mq.listener;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.cyf.domain.Order;
+import com.cyf.enums.OrderType;
+import com.cyf.model.Order;
 import com.cyf.enums.OrderEnum;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
+import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -34,9 +37,8 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
+    @Reference(version = "1.0.0")
     private ProductService productService;
-
 
 
     @Override
@@ -74,6 +76,7 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
             }
 
             Order order = new Order();
+            order.setOrderStatus(OrderType.SECKILL.getType());
             BeanUtil.copyProperties(orderMsgProtocol, order);
 
             //先作库存校验 看看还有没有 如果还有则执行下一步 没有则消费成功 返回给用户信息

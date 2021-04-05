@@ -6,6 +6,9 @@ spring:
    application:
      name: dubbo-prodcut-service
      registry: zookeeper://47.107.53.172:2181
+   protocol:
+     name: dubbo
+     port: 20882
   application:
     name: prodcut-service
   datasource:

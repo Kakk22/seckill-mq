@@ -1,7 +1,8 @@
 package com.cyf.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cyf.domain.Order;
+import com.cyf.model.Order;
 
 /**
  * @author 陈一锋
@@ -24,4 +25,13 @@ public interface OrderService extends IService<Order> {
      * @param id  id
      */
     void updateStatus(Integer status,Integer id);
+
+    /**
+     * @param userPhone 用户手机
+     * @param type      秒杀订单还是正常订单
+     * @param pageSize  每页大小
+     * @param PageNum   当前页
+     * @return 用户订单列表
+     */
+    IPage<Order> list(String userPhone, Integer type, Integer pageSize, Integer PageNum);
 }

@@ -1,7 +1,7 @@
 package com.cyf.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.cyf.domain.Order;
+import com.cyf.model.Order;
 import org.apache.ibatis.annotations.Param;
 
 /**
