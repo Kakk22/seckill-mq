@@ -1,5 +1,5 @@
 # seckill-mq
-基于MQ实现秒杀
+基于MQ实现秒杀 RocketMQ 实战项目
 
 所用到的技术栈
 - RocketMQ
