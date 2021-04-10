@@ -11,6 +11,7 @@ import java.util.Date;
 
 /**
  * 订单实体
+ *
  * @author 陈一锋
  * @date 2021/3/19 22:45
  **/
@@ -30,4 +31,9 @@ public class Order implements Serializable {
     private Date chargeTime;
     private Date finishTime;
     private int orderType;
+    private Date createTime;
+    private Date updateTime;
+    private int pay;
+    private Date payTime;
+    private int payType;
 }

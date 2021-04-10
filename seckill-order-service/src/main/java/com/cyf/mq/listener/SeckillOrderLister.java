@@ -18,6 +18,7 @@ import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
@@ -77,6 +78,8 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
 
             Order order = new Order();
             order.setOrderStatus(OrderType.SECKILL.getType());
+            //秒杀订单价格 这里简化不做任何优化扣减
+            order.setMoney(new BigDecimal(orderMsgProtocol.getChargeMoney()));
             BeanUtil.copyProperties(orderMsgProtocol, order);
 
             //先作库存校验 看看还有没有 如果还有则执行下一步 没有则消费成功 返回给用户信息

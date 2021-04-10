@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 
 /**
  * 这里因为继承了ServiceImpl,此类为一个aop代理对象
@@ -47,6 +49,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return null;
         }
         //扣减成功则执行下单
+        order.setChargeTime(new Date());
+        order.setUpdateTime(new Date());
         boolean saveResult = save(order);
 
         if (saveResult) {

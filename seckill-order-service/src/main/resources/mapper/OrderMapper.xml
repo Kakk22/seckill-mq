@@ -4,7 +4,8 @@
 
     <update id="updateStatus">
       update t_order
-      SET order_status = #{status}
+      SET order_status = #{status},
+      update_time = now()
       WHERE id = #{id}
     </update>
 
