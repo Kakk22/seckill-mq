@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cyf.event.CreateOrderEvent;
 import com.cyf.mapper.OrderMapper;
 import com.cyf.model.Order;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -28,7 +31,7 @@ import java.util.Date;
 @Component
 @Service(version = "1.0.0", interfaceClass = OrderService.class)
 @Slf4j
-public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService {
+public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService,ApplicationEventPublisherAware {
 
 
     @Reference(version = "1.0.0")
@@ -36,6 +39,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private OrderMapper orderMapper;
+
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public Order createOrder(Order order) {
@@ -55,6 +60,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         if (saveResult) {
             log.info("用户下单成功,下单实体:{}", order.toString());
+            //发送创建订单成功事件
+            CreateOrderEvent createOrderEvent = new CreateOrderEvent(this, order.getOrderSn());
+            applicationEventPublisher.publishEvent(createOrderEvent);
             return order;
         } else {
             log.error("用户下单失败,下单实体:{}", order.toString());
@@ -78,5 +86,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         IPage<Order> page = new Page<>(pageSize, PageNum);
 
         return this.page(page,wrapper);
+    }
+
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }
