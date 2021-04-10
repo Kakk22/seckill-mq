@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +40,10 @@ public class OrderMsgProtocol extends BaseMessages implements Serializable {
      * 订单价格
      */
     private String chargeMoney;
+    /**
+     * 下单时间
+     */
+    private Date chargeTime;
     /**
      * 消息头
      */

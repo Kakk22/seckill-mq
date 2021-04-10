@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -89,6 +90,7 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         orderMsgProtocol.setChargeMoney(chargeOrderRequest.getPrice());
         orderMsgProtocol.setProId(chargeOrderRequest.getProductId());
         orderMsgProtocol.setOrderSn(orderSn);
+        orderMsgProtocol.setChargeTime(new Date());
 
         String msg = orderMsgProtocol.encode();
         log.info("秒杀消息入队,消息协议:{}", msg);
