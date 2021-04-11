@@ -12,6 +12,7 @@ import com.cyf.dto.ChargeOrderResponse;
 import com.cyf.enums.MessagesProtocolEnum;
 import com.cyf.model.Order;
 import com.cyf.mq.SecKillOrderProducer;
+import com.cyf.msg.CreateOrderMessage;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
 import com.cyf.service.OrderService;
@@ -24,8 +25,10 @@ import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
 import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -52,6 +55,9 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
 
     @Override
     public boolean chargeOrder(ChargeOrderRequest chargeOrderRequest) {
@@ -85,34 +91,32 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
         //生成订单编号
         String orderSn = UUID.randomUUID().toString();
         //组装消息
-        OrderMsgProtocol orderMsgProtocol = new OrderMsgProtocol();
-        orderMsgProtocol.setUserPhone(chargeOrderRequest.getPhone());
-        orderMsgProtocol.setChargeMoney(chargeOrderRequest.getPrice());
-        orderMsgProtocol.setProId(chargeOrderRequest.getProductId());
-        orderMsgProtocol.setOrderSn(orderSn);
-        orderMsgProtocol.setChargeTime(new Date());
+        CreateOrderMessage message = new CreateOrderMessage();
+        message.setChargeMoney(chargeOrderRequest.getPrice());
+        message.setChargeTime(new Date());
+        message.setOrderSn(orderSn);
+        message.setProId(chargeOrderRequest.getProductId());
+        message.setUserPhone(chargeOrderRequest.getPhone());
 
-        String msg = orderMsgProtocol.encode();
-        log.info("秒杀消息入队,消息协议:{}", msg);
+        log.info("秒杀消息入队,消息协议:{}", message);
 
-        DefaultMQProducer mqProducer = secKillOrderProducer.getProducer();
         //封装mq消息
-        Message message = new Message(MessagesProtocolEnum.SECKILL_ORDER_TOPIC.getTopic(), msg.getBytes());
 
         try {
-            SendResult result = mqProducer.send(message);
+
+            SendResult sendResult = rocketMQTemplate.syncSend(CreateOrderMessage.TOPIC, MessageBuilder.withPayload(message).build(), 30000);
             //判断是否为空或状态不为成功
-            if (result == null || result.getSendStatus() != SendStatus.SEND_OK) {
-                log.error("秒杀订单消息入队失败,msgBody:{}", msg);
+            if (sendResult == null || sendResult.getSendStatus() != SendStatus.SEND_OK) {
+                log.error("秒杀订单消息入队失败,msgBody:{}", message);
                 //todo 封装返回值
             }
             //成功
             ChargeOrderResponse response = new ChargeOrderResponse();
-            BeanUtil.copyProperties(orderMsgProtocol, response);
+            BeanUtil.copyProperties(message, response);
             //todo 返回成功信息
 
             log.info("秒杀订单入队成功,订单排队中。订单信息:{}", response);
-        } catch (MQClientException | InterruptedException | MQBrokerException | RemotingException e) {
+        } catch (Exception e) {
             log.error("秒杀消息入队失败,mq发生消息错误信息:{}", e.getMessage());
             throw e;
         }

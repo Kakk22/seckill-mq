@@ -1,20 +1,21 @@
-package com.cyf.mq.listener;
+package com.cyf.mq.consumer;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.cyf.enums.OrderEnum;
 import com.cyf.enums.OrderType;
 import com.cyf.model.Order;
-import com.cyf.enums.OrderEnum;
+import com.cyf.msg.CreateOrderMessage;
 import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
+import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlySt
  **/
 @Component
 @Slf4j
-public class SeckillOrderLister implements MessageListenerConcurrently {
+public class SeckillOrderConsumer implements RocketMQListener<CreateOrderMessage> {
 
     @Autowired
     private OrderService orderService;
@@ -42,7 +43,6 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
     private ProductService productService;
 
 
-    @Override
     public ConsumeConcurrentlyStatus consumeMessage(List<MessageExt> msgs, ConsumeConcurrentlyContext context) {
 
         for (MessageExt ext : msgs) {
@@ -102,5 +102,10 @@ public class SeckillOrderLister implements MessageListenerConcurrently {
             return RECONSUME_LATER;
         }
         return CONSUME_SUCCESS;
+    }
+
+    @Override
+    public void onMessage(CreateOrderMessage message) {
+
     }
 }

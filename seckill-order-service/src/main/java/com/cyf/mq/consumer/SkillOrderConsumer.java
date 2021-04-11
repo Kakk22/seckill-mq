@@ -1,4 +1,4 @@
-package com.cyf.mq;
+package com.cyf.mq.consumer;
 
 import com.cyf.config.RocketMqConfig;
 import com.cyf.enums.MessagesProtocolEnum;

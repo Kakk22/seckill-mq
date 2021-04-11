@@ -22,10 +22,15 @@ spring:
    timeout: 2000
 
 #rocketMQ 配置
+rocketmq:
+    name-server: 47.107.53.172:9876
+    producer:
+      group: ${spring.application.name}-producer-group
+
+#暂时 等下整合后删掉
 rocketMq:
   nameServer:
     offline: 47.107.53.172:9876
-
 
 
 #添加mybatis输出sql
