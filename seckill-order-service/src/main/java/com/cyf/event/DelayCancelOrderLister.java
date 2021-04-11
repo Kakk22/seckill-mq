@@ -1,7 +1,5 @@
 package com.cyf.event;
 
-import com.cyf.service.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 

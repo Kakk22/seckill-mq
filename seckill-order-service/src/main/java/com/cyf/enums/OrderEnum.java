@@ -24,7 +24,11 @@ public enum OrderEnum {
     /**
      * 处理失败
      */
-    FAIL(3);
+    FAIL(3),
+    /**
+     * 已取消
+     */
+    CANCEL(4);
 
     private final int status;
 

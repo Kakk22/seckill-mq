@@ -22,9 +22,9 @@ public interface OrderService extends IService<Order> {
      * 更新订单状态
      *
      * @param status 状态值
-     * @param id  id
+     * @param id     id
      */
-    void updateStatus(Integer status,Integer id);
+    void updateStatus(Integer status, Integer id);
 
     /**
      * @param userPhone 用户手机
@@ -34,4 +34,12 @@ public interface OrderService extends IService<Order> {
      * @return 用户订单列表
      */
     IPage<Order> list(String userPhone, Integer type, Integer pageSize, Integer PageNum);
+
+
+    /**
+     * 超时未支付取消订单接口
+     *
+     * @param orderSn 订单编号
+     */
+    void cancelOrder(String orderSn);
 }

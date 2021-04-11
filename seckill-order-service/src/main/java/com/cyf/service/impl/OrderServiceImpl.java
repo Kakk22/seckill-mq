@@ -1,11 +1,14 @@
 package com.cyf.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.cyf.enums.OrderEnum;
 import com.cyf.event.CreateOrderEvent;
 import com.cyf.mapper.OrderMapper;
 import com.cyf.model.Order;
@@ -18,6 +21,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -31,7 +35,7 @@ import java.util.Date;
 @Component
 @Service(version = "1.0.0", interfaceClass = OrderService.class)
 @Slf4j
-public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService,ApplicationEventPublisherAware {
+public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements OrderService, ApplicationEventPublisherAware {
 
 
     @Reference(version = "1.0.0")
@@ -41,6 +45,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     private ApplicationEventPublisher applicationEventPublisher;
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     @Override
     public Order createOrder(Order order) {
@@ -85,12 +94,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         IPage<Order> page = new Page<>(pageSize, PageNum);
 
-        return this.page(page,wrapper);
+        return this.page(page, wrapper);
     }
 
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
+    public void cancelOrder(String orderSn) {
+        //查询该订单是否已支付
+        QueryWrapper<Order> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Order::getOrderSn, orderSn)
+                .eq(Order::getStatus, 0)
+                .eq(Order::getPay, 0);
+
+        List<Order> list = this.list(wrapper);
+        if (CollectionUtil.isEmpty(list)) {
+            log.info("订单:{}已经完成支付或已删除");
+            return;
+        }
+
+        //不为空 则取消订单
+        UpdateWrapper<Order> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda().eq(Order::getOrderSn, orderSn)
+                .eq(Order::getStatus, 0)
+                .eq(Order::getPay, 0)
+                .set(Order::getOrderStatus, OrderEnum.CANCEL.getStatus())
+                .set(Order::getUpdateTime, new Date());
+
+        this.update(null, updateWrapper);
+
+        //todo 释放库存
     }
 }
