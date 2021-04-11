@@ -13,8 +13,12 @@ public enum MessagesProtocolEnum {
     /**
      * 秒杀订单消息协议
      */
-    SECKILL_ORDER_TOPIC("SECKILL_ORDER_TOPIC", "SECKILL_ORDER_PRODUCER_GROUP", "SECKILL_ORDER_CONSUMER_GROUP", "秒杀订单协议");
+    SECKILL_ORDER_TOPIC("SECKILL_ORDER_TOPIC", "ORDER_PRODUCER_GROUP", "ORDER_CONSUMER_GROUP", "秒杀订单协议"),
 
+    /**
+     * 延时取消订单
+     */
+    CANCEL_ORDER_TOPIC("CANCEL_ORDER_TOPIC", "ORDER_PRODUCER_GROUP", "ORDER_CONSUMER_GROUP", "延时取消协议");
 
     /**
      * 主题
