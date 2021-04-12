@@ -3,35 +3,22 @@ package com.cyf.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cyf.constant.RedisKeyConstant;
 import com.cyf.dto.ChargeOrderRequest;
 import com.cyf.dto.ChargeOrderResponse;
-import com.cyf.enums.MessagesProtocolEnum;
-import com.cyf.model.Order;
-import com.cyf.mq.SecKillOrderProducer;
 import com.cyf.msg.CreateOrderMessage;
-import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.ChargeOrderService;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.exception.MQBrokerException;
-import org.apache.rocketmq.client.exception.MQClientException;
-import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
-import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -50,8 +37,6 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
     @Reference(version = "1.0.0")
     private OrderService orderService;
 
-    @Resource
-    private SecKillOrderProducer secKillOrderProducer;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -100,10 +85,8 @@ public class ChargeOrderServiceImpl implements ChargeOrderService {
 
         log.info("秒杀消息入队,消息协议:{}", message);
 
-        //封装mq消息
-
         try {
-
+            //封装mq消息
             SendResult sendResult = rocketMQTemplate.syncSend(CreateOrderMessage.TOPIC, MessageBuilder.withPayload(message).build(), 30000);
             //判断是否为空或状态不为成功
             if (sendResult == null || sendResult.getSendStatus() != SendStatus.SEND_OK) {
