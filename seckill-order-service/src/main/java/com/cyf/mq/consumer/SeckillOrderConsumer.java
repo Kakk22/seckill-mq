@@ -8,13 +8,9 @@ import com.cyf.enums.OrderEnum;
 import com.cyf.enums.OrderType;
 import com.cyf.model.Order;
 import com.cyf.msg.CreateOrderMessage;
-import com.cyf.msg.OrderMsgProtocol;
 import com.cyf.service.OrderService;
 import com.cyf.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
-import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
-import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
-
-import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-import static org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus.RECONSUME_LATER;
 
 /**
  * 秒杀订单监听器
