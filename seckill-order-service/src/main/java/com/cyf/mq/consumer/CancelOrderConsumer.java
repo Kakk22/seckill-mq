@@ -8,6 +8,8 @@ import org.apache.rocketmq.spring.core.RocketMQListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 /**
  * 取消订单消费者
  *
@@ -25,7 +27,7 @@ public class CancelOrderConsumer implements RocketMQListener<CancelOrderMessage>
 
     @Override
     public void onMessage(CancelOrderMessage message) {
-        log.info("接收到取消订单消息,订单编号:{}", message.getOrderSn());
+        log.info("接收到取消订单消息,订单编号:{},当前时间:{}", message.getOrderSn(), LocalDateTime.now());
         orderService.cancelOrder(message.getOrderSn());
     }
 }

@@ -121,7 +121,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 .set(Order::getUpdateTime, new Date());
 
         this.update(null, updateWrapper);
-
+        log.info("取消订单成功,订单编号:{}", orderSn);
         //todo 释放库存
     }
 }
