@@ -29,9 +29,6 @@ import org.springframework.stereotype.Component;
 public class DelayCancelOrderLister implements ApplicationListener<CreateOrderEvent> {
 
     @Autowired
-    private MQProducer mqProducer;
-
-    @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
     @Override

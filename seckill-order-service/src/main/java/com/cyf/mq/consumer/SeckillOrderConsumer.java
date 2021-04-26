@@ -80,13 +80,13 @@ public class SeckillOrderConsumer implements RocketMQListener<CreateOrderMessage
         log.info("用户:{},扣减商品id:{},存在库存,进行下单操作", userPhone, productId);
         Order orderResult = orderService.createOrder(order);
 
-        if (orderResult != null) {
-            log.info("用户:{},扣减商品id:{},下单成功!!!", userPhone, productId);
-            // 模拟订单处理，直接修改订单状态为处理中
-            orderService.updateStatus(OrderEnum.DOING.getStatus(), orderResult.getId());
-        } else {
+        if (orderResult == null) {
             throw new RuntimeException("秒杀订单监听器:下单失败,消息内容:" + message.toString());
         }
+
+        log.info("用户:{},扣减商品id:{},下单成功!!!", userPhone, productId);
+        // 模拟订单处理，直接修改订单状态为处理中
+        orderService.updateStatus(OrderEnum.DOING.getStatus(), orderResult.getId());
 
     }
 }

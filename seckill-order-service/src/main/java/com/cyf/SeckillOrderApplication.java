@@ -1,6 +1,5 @@
 package com.cyf;
 
-import com.alibaba.dubbo.config.spring.context.annotation.DubboComponentScan;
 import com.alibaba.dubbo.spring.boot.annotation.EnableDubboConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
